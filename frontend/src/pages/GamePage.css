@@ -1,18 +1,48 @@
 /* GamePage.css */
 
+
 .game-page {
     font-family: Arial, sans-serif;
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f0f0f0;
+    background-color: #f8eeee;
+    border: 1px solid #380462;
+    border-radius: 10px;
+}
+
+.game-page h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px; /* Larger font size for page title */
+    color: #0c0808; /* Darker color for page title */
+}
+.game-page h2 {
+    font-size: 24px; /* Larger font size for question text */
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #ac2626; /* Adjust color as needed */
+}
+.timer {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+    color: #2196f3; /* Blue color */
+}
+
+.question-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 8px;
 }
 
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
+.question-text {
+    font-size: 24px; /* Larger font size for question text */
+    font-weight: bold;
+    margin-bottom: 15px;
 }
 
 .options {
@@ -23,11 +53,13 @@ h1 {
 .option-button {
     display: block;
     width: 100%;
-    padding: 10px;
+    padding: 14px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     background-color: #fff;
     cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s ease;
 }
 
 .option-button:hover {
@@ -53,10 +85,38 @@ h1 {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+    align-items: center;
 }
 
 .question-number {
     font-weight: bold;
+    font-size: 20px;
+    align-self: center;
+    margin-left: 10px;
+}
+
+.navigation button {
+    padding: 12px 24px;
+    background-color: #2196f3; /* Blue */
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-size: large;
+}
+
+.navigation button:hover {
+    background-color: #0d8bf2; /* Darker blue */
+}
+
+.navigation button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.navigation button + button {
+    margin-left: 10px;
 }
 
 .results {
@@ -75,15 +135,17 @@ h1 {
     border: none;
     cursor: pointer;
     border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-size: large;
 }
 
 .results button:hover {
     background-color: #0d8bf2; /* Darker blue */
 }
 
-hr {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border: 0;
-    border-top: 1px solid #ccc;
+.time-remaining {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
 }

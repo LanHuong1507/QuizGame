@@ -1,5 +1,3 @@
-// services/types.ts
-
 export interface QuestionData {
     id: number;
     questionText: string;
