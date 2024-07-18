@@ -1,21 +1,25 @@
-/* GamePage.css */
-
-
-.game-page {
+.body {
+    background-image: url('../../images/quiz-background.webp'); 
+  }
+  
+  .game-page {
     font-family: Arial, sans-serif;
     max-width: 800px;
-    margin: 0 auto;
+    max-height: 800px;
+    margin: 0 auto; 
     padding: 20px;
-    background-color: #f8eeee;
-    border: 1px solid #380462;
-    border-radius: 10px;
-}
-
+    background-color: rgb(255, 255, 255);
+    border: 1px solid black;
+    border-radius: 20px;
+    position: relative;
+  }
 .game-page h1 {
     text-align: center;
     margin-bottom: 20px;
-    font-size: 28px; /* Larger font size for page title */
-    color: #0c0808; /* Darker color for page title */
+    font-size: 40px; 
+    color: #0c0808; 
+    font-weight: 600;
+
 }
 .game-page h2 {
     font-size: 24px; /* Larger font size for question text */
@@ -34,13 +38,12 @@
 .question-container {
     margin-top: 20px;
     padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ccc;
+    border: 1px solid #232121;
     border-radius: 8px;
 }
 
 .question-text {
-    font-size: 24px; /* Larger font size for question text */
+    font-size: 26px; 
     font-weight: bold;
     margin-bottom: 15px;
 }
@@ -53,13 +56,11 @@
 .option-button {
     display: block;
     width: 100%;
-    padding: 14px;
+    padding: 10px;
     margin-bottom: 10px;
-    border: 1px solid #ccc;
-    background-color: #fff;
+    border: 1px solid #1c1818;
     cursor: pointer;
-    font-size: 20px;
-    transition: background-color 0.3s ease;
+    font-size: 24px;
 }
 
 .option-button:hover {
@@ -67,12 +68,12 @@
 }
 
 .option-button.correct {
-    background-color: #8bc34a; /* Light green */
+    background-color: #07ce28; 
     color: #fff;
 }
 
 .option-button.incorrect {
-    background-color: #f44336; /* Red */
+    background-color: #e72416; /* Red */
     color: #fff;
 }
 
@@ -90,14 +91,14 @@
 
 .question-number {
     font-weight: bold;
-    font-size: 20px;
+    font-size: x-large;
     align-self: center;
     margin-left: 10px;
 }
 
 .navigation button {
     padding: 12px 24px;
-    background-color: #2196f3; /* Blue */
+    background-color: #0019bb; /* Blue */
     color: #fff;
     border: none;
     cursor: pointer;
@@ -107,7 +108,7 @@
 }
 
 .navigation button:hover {
-    background-color: #0d8bf2; /* Darker blue */
+    background-color: #0512cb; /* Darker blue */
 }
 
 .navigation button:disabled {
@@ -122,22 +123,27 @@
 .results {
     text-align: center;
     margin-top: 20px;
-}
-
-.results p {
+  }
+  
+  .results p {
     margin-bottom: 10px;
-}
-
-.results button {
+  }
+  
+  .results button {
     padding: 10px 20px;
-    background-color: #2196f3; /* Blue */
+    background-color: #06589c; /* Blue */
     color: #fff;
     border: none;
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s ease;
     font-size: large;
-}
+  }
+  
+  .results button:hover {
+    background-color: #0d8bf2; /* Darker blue */
+  }
+  
 
 .results button:hover {
     background-color: #0d8bf2; /* Darker blue */
