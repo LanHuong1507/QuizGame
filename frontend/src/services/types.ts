@@ -1,3 +1,5 @@
+// services/types.ts
+
 export interface QuestionData {
     id: number;
     questionText: string;
@@ -5,5 +7,6 @@ export interface QuestionData {
     optionB: string;
     optionC: string;
     optionD: string;
-    correctAnswer: string;
+    correctAnswer: OptionKey;
 }
+export type OptionKey = 'optionA' | 'optionB' | 'optionC' | 'optionD';

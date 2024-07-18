@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { fetchQuestions } from '../services/ApiService';
-import { QuestionData } from '../services/types';
-import './GamePage.css';
+import { QuestionData, OptionKey } from '../services/types';
+import './GamePage.css'; // Import the CSS file
 
-const GamePage = () => {
+interface AnswerStatus {
+    selectedAnswer: string | null;
+    isCorrect: boolean | null;
+}
+
+const GamePage: React.FC = () => {
     const [questions, setQuestions] = useState<QuestionData[]>([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+    const [answerStatus, setAnswerStatus] = useState<AnswerStatus[]>([]);
     const [showNextButton, setShowNextButton] = useState<boolean>(false);
-    const [showPreviousButton, setShowPreviousButton] = useState<boolean>(false);
-    const [feedback, setFeedback] = useState<string | null>(null);
     const [score, setScore] = useState<number>(0);
-    const [isLastQuestion, setIsLastQuestion] = useState<boolean>(false);
+    const [showResults, setShowResults] = useState<boolean>(false);
 
     useEffect(() => {
         fetchQuestionsFromApi();
@@ -21,103 +24,95 @@ const GamePage = () => {
         try {
             const data = await fetchQuestions();
             setQuestions(data);
+            setAnswerStatus(new Array(data.length).fill({ selectedAnswer: null, isCorrect: null }));
         } catch (error) {
             console.error('Error fetching questions:', error);
         }
     };
 
     const handleSelectAnswer = (answer: string) => {
-        setSelectedAnswer(answer);
-        const correctAnswer = questions[currentQuestionIndex].correctAnswer;
-
-        if (answer === correctAnswer) {
-            setFeedback('Correct!');
-            setScore(prevScore => prevScore + 1);
-        } else {
-            setFeedback('Wrong!');
-        }
-
+        const isCorrect = answer === questions[currentQuestionIndex].correctAnswer;
+        const newAnswerStatus = [...answerStatus];
+        newAnswerStatus[currentQuestionIndex] = { selectedAnswer: answer, isCorrect };
+        setAnswerStatus(newAnswerStatus);
         setShowNextButton(true);
-        setShowPreviousButton(currentQuestionIndex > 0);
+
+        if (isCorrect) {
+            setScore((prevScore) => prevScore + 1);
+        }
     };
 
     const handleNextQuestion = () => {
-        if (currentQuestionIndex + 1 < questions.length) {
-            setSelectedAnswer(null);
-            setFeedback(null);
+        if (currentQuestionIndex < questions.length - 1) {
             setShowNextButton(false);
-            setShowPreviousButton(currentQuestionIndex + 1 > 0);
-            setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+            setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
         } else {
-            setIsLastQuestion(true);
+            setShowResults(true); // Show results when on the last question
         }
     };
 
     const handlePreviousQuestion = () => {
-        setSelectedAnswer(null);
-        setFeedback(null);
-        setShowNextButton(false);
-        setShowPreviousButton(currentQuestionIndex - 1 > 0);
-        setCurrentQuestionIndex(prevIndex => prevIndex - 1);
+        if (currentQuestionIndex > 0) {
+            setShowNextButton(answerStatus[currentQuestionIndex - 1].selectedAnswer !== null);
+            setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
+        }
     };
 
-    const getButtonClass = (option: string) => {
-        if (selectedAnswer) {
-            if (option === questions[currentQuestionIndex].correctAnswer) {
-                return 'option-button correct';
-            } else if (option === selectedAnswer) {
-                return 'option-button wrong';
-            }
-        }
-        return 'option-button';
+    const handleRestartQuiz = () => {
+        setShowResults(false);
+        setCurrentQuestionIndex(0);
+        setAnswerStatus(new Array(questions.length).fill({ selectedAnswer: null, isCorrect: null }));
+        setShowNextButton(false);
+        setScore(0);
     };
 
     return (
-        <div className="game-container">
-            <h1 className="game-title">Game Page</h1>
-            {questions.length > 0 && currentQuestionIndex < questions.length && (
+        <div className="game-page">
+            <h1>Game Page</h1>
+            {!showResults && questions.length > 0 && currentQuestionIndex < questions.length && (
                 <div>
-                    <p className="question-text">{questions[currentQuestionIndex].questionText}</p>
-                    <ul className="options-list">
-                        <li>
-                            <button className={getButtonClass(questions[currentQuestionIndex].optionA)} onClick={() => handleSelectAnswer(questions[currentQuestionIndex].optionA)}>
-                                {questions[currentQuestionIndex].optionA}
-                            </button>
-                        </li>
-                        <li>
-                            <button className={getButtonClass(questions[currentQuestionIndex].optionB)} onClick={() => handleSelectAnswer(questions[currentQuestionIndex].optionB)}>
-                                {questions[currentQuestionIndex].optionB}
-                            </button>
-                        </li>
-                        <li>
-                            <button className={getButtonClass(questions[currentQuestionIndex].optionC)} onClick={() => handleSelectAnswer(questions[currentQuestionIndex].optionC)}>
-                                {questions[currentQuestionIndex].optionC}
-                            </button>
-                        </li>
-                        <li>
-                            <button className={getButtonClass(questions[currentQuestionIndex].optionD)} onClick={() => handleSelectAnswer(questions[currentQuestionIndex].optionD)}>
-                                {questions[currentQuestionIndex].optionD}
-                            </button>
-                        </li>
+                    <p>{questions[currentQuestionIndex].questionText}</p>
+                    <ul className="options">
+                        {(['optionA', 'optionB', 'optionC', 'optionD'] as OptionKey[]).map((optionKey) => (
+                            <li key={optionKey}>
+                                <button
+                                    className={`option-button ${
+                                        answerStatus[currentQuestionIndex].selectedAnswer !== null &&
+                                        (questions[currentQuestionIndex][optionKey] === questions[currentQuestionIndex].correctAnswer
+                                            ? 'correct'
+                                            : answerStatus[currentQuestionIndex].selectedAnswer === questions[currentQuestionIndex][optionKey]
+                                            ? 'incorrect selected'
+                                            : '')
+                                    }`}
+                                    onClick={() => handleSelectAnswer(questions[currentQuestionIndex][optionKey])}
+                                    disabled={answerStatus[currentQuestionIndex].selectedAnswer !== null}
+                                >
+                                    {questions[currentQuestionIndex][optionKey]}
+                                </button>
+                            </li>
+                        ))}
                     </ul>
-                    {selectedAnswer && <p className="feedback-text">{feedback}</p>}
-                    <div className="navigation-buttons">
-                        {showPreviousButton && (
-                            <button className="nav-button previous-button" onClick={handlePreviousQuestion}>Previous</button>
-                        )}
-                        {showNextButton && (
-                            <button className="nav-button next-button" onClick={handleNextQuestion}>Next</button>
-                        )}
+                    <div className="navigation">
+                        <button onClick={handlePreviousQuestion} disabled={currentQuestionIndex === 0}>
+                            Previous Question
+                        </button>
+                        <span className="question-number">
+                            {currentQuestionIndex + 1} of {questions.length}
+                        </span>
+                        <button onClick={handleNextQuestion} disabled={!showNextButton}>
+                            {currentQuestionIndex === questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
+                        </button>
                     </div>
                 </div>
             )}
-            {isLastQuestion && (
-                <div className="results-container">
-                    <h2>Quiz Completed</h2>
-                    <p className="score-text">Your Score: {score} / {questions.length}</p>
+            {!showResults && questions.length === 0 && <p>Loading questions...</p>}
+            {showResults && (
+                <div className="results">
+                    <h2>Quiz Complete</h2>
+                    <p>Your Score: {score} out of {questions.length}</p>
+                    <button onClick={handleRestartQuiz}>Restart Quiz</button>
                 </div>
             )}
-            {questions.length === 0 && <p className="loading-text">Loading questions...</p>}
         </div>
     );
 };
