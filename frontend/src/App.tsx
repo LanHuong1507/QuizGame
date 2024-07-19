@@ -1,21 +1,44 @@
 import React, { useState } from 'react';
-import './App.css'; // Your CSS file for styling
+import './App.css';
 import StartPage from './components/StartPage/StartPage';
 import GamePage from './components/GamePage/GamePage';
+import ResultPage from './components/ResultPage/ResultPage';
 
 const App: React.FC = () => {
   const [showGame, setShowGame] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [score, setScore] = useState(0);
+  const [totalQuestions, setTotalQuestions] = useState(0);
 
   const handleStartGame = () => {
     setShowGame(true);
+    setShowResult(false);
+  };
+
+  const handleQuizComplete = (finalScore: number, questionsCount: number) => {
+    setScore(finalScore);
+    setTotalQuestions(questionsCount);
+    setShowGame(false);
+    setShowResult(true);
+  };
+
+  const handleRestartQuiz = () => {
+    setShowGame(false);
+    setShowResult(false);
+    setScore(0);
+    setTotalQuestions(0);
   };
 
   return (
     <div className="App">
-      {!showGame ? (
+      {!showGame && !showResult && (
         <StartPage onStartGame={handleStartGame} />
-      ) : (
-        <GamePage onRestart={() => setShowGame(false)} />
+      )}
+      {showGame && (
+        <GamePage onQuizComplete={handleQuizComplete} />
+      )}
+      {showResult && (
+        <ResultPage score={score} totalQuestions={totalQuestions} onRestart={handleRestartQuiz} />
       )}
     </div>
   );

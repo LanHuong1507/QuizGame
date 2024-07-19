@@ -1,0 +1,36 @@
+
+.result-page {
+  text-align: center;
+  margin-top: 100px;
+  background-image: url('../../images/quiz-background.webp'); /* Replace with your image path */
+  background-size: cover;
+  background-position: center;
+  padding: 100px; /* Increase padding for more space */
+  min-height: 300px; /* Minimum height of the viewport */
+  color: #fff;
+  font-size: 1.5rem; /* Increase font size for better readability */
+  }
+  
+  .result-page h1 {
+    font-size: 3.5rem;
+    color: #fff; 
+  }
+  
+  .result-page p {
+    font-size: 1.2rem;
+    color: #fff; 
+    margin-bottom: 20px;
+  }
+  
+  .result-page button {
+    background-color: #ef470f;
+    color: #fff;
+    font-size: 30px;
+    padding: 20px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+
+  

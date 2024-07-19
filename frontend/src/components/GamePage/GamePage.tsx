@@ -9,18 +9,18 @@ interface AnswerStatus {
 }
 
 interface GamePageProps {
-  onRestart: () => void;
+  onQuizComplete: (score: number, totalQuestions: number) => void;
 }
 
-const GamePage: React.FC<GamePageProps> = ({ onRestart }) => {
+const GamePage: React.FC<GamePageProps> = ({ onQuizComplete }) => {
   const [questions, setQuestions] = useState<QuestionData[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [answerStatus, setAnswerStatus] = useState<AnswerStatus[]>([]);
   const [showNextButton, setShowNextButton] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
-  const [showResults, setShowResults] = useState<boolean>(false);
   const [timer, setTimer] = useState<number>(15);
   const [timerRunning, setTimerRunning] = useState<boolean>(false);
+  const [isAnswerLocked, setIsAnswerLocked] = useState<boolean>(false);
 
   useEffect(() => {
     fetchQuestionsFromApi();
@@ -59,64 +59,42 @@ const GamePage: React.FC<GamePageProps> = ({ onRestart }) => {
         clearInterval(countdown);
       }
     };
-  }, [timerRunning, currentQuestionIndex]);
+  }, [timerRunning]);
 
   const handleSelectAnswer = (answer: string) => {
-    const isCorrect = answer === questions[currentQuestionIndex].correctAnswer;
-    const newAnswerStatus = [...answerStatus];
-    newAnswerStatus[currentQuestionIndex] = { selectedAnswer: answer, isCorrect };
-    setAnswerStatus(newAnswerStatus);
-    setShowNextButton(true);
-    setTimerRunning(false); // Stop the timer for the current question
+    if (!isAnswerLocked) {
+      const isCorrect = answer === questions[currentQuestionIndex].correctAnswer;
+      const newAnswerStatus = [...answerStatus];
+      newAnswerStatus[currentQuestionIndex] = { selectedAnswer: answer, isCorrect };
+      setAnswerStatus(newAnswerStatus);
+      setShowNextButton(true);
+      setTimerRunning(false);
 
-    if (isCorrect) {
-      setScore((prevScore) => prevScore + 1);
-    }
-
-    // Wait for a brief moment before moving to the next question
-    setTimeout(() => {
-      if (currentQuestionIndex < questions.length - 1) {
-        setShowNextButton(false); // Hide the next button temporarily
-        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-        setTimer(15); // Reset timer for the next question
-        setTimerRunning(true); // Start the timer for the next question
-      } else {
-        setShowResults(true); // Show results when on the last question
-        setShowNextButton(true);
+      if (isCorrect) {
+        setScore((prevScore) => prevScore + 1);
       }
-    }, 1000); // Adjust the delay time as needed
+    }
   };
 
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
-      setShowNextButton(true); // Hide the next button temporarily
+      setIsAnswerLocked(true); // Lock the answer when going back
+      setShowNextButton(true);
+      setTimerRunning(false); // Stop the timer
       setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
-      setTimer(15); // Reset timer for the previous question
-      setTimerRunning(true); // Start the timer for the previous question
     }
   };
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
-      setShowNextButton(false); // Hide the next button temporarily
+      setIsAnswerLocked(false); // Unlock the answer when moving forward
+      setShowNextButton(true);
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
       setTimer(15); // Reset timer for the next question
       setTimerRunning(true); // Start the timer for the next question
     } else {
-      setShowResults(true); // Show results when on the last question
-      setShowNextButton(true);
+      onQuizComplete(score, questions.length);
     }
-  };
-
-  const handleRestartQuiz = () => {
-    setShowResults(false);
-    setCurrentQuestionIndex(0);
-    setAnswerStatus(new Array(questions.length).fill({ selectedAnswer: null, isCorrect: null }));
-    setShowNextButton(false);
-    setScore(0);
-    setTimer(15);
-    setTimerRunning(true);
-    onRestart(); // Call the provided onRestart function to handle any additional logic in the parent component
   };
 
   const formatTime = (seconds: number): string => {
@@ -126,66 +104,56 @@ const GamePage: React.FC<GamePageProps> = ({ onRestart }) => {
     return `${minutes}:${formattedSeconds}`;
   };
 
-  if (showResults) {
-    return (
-      <div className="game-page">
-        <h1>Quiz Complete</h1>
-        <p>Your Score: {score} out of {questions.length}</p>
-        <button onClick={handleRestartQuiz}>Restart Quiz</button>
-      </div>
-    );
-  }
+  const getButtonClass = (optionKey: OptionKey): string => {
+    const currentAnswer = questions[currentQuestionIndex][optionKey];
+    const status = answerStatus[currentQuestionIndex];
+
+    if (status.selectedAnswer !== null) {
+      if (currentAnswer === status.selectedAnswer) {
+        return status.isCorrect ? 'correct' : 'incorrect selected';
+      }
+      if (currentAnswer === questions[currentQuestionIndex].correctAnswer) {
+        return 'correct';
+      }
+    }
+
+    return '';
+  };
 
   return (
-    <div className='body'>
-        <div className="game-page">
-      <h1>QUIZ GAME</h1>
-      {!showResults && questions.length > 0 && currentQuestionIndex < questions.length && (
-        <div>
-          <h2>{questions[currentQuestionIndex].questionText}</h2>
-          <div className="timer">{formatTime(timer)} remaining</div> {/* Display the formatted timer */}
-          <ul className="options">
-            {(['optionA', 'optionB', 'optionC', 'optionD'] as OptionKey[]).map((optionKey) => (
-              <li key={optionKey}>
-                <button
-                  className={`option-button ${
-                    answerStatus[currentQuestionIndex].selectedAnswer !== null &&
-                    (questions[currentQuestionIndex][optionKey] === questions[currentQuestionIndex].correctAnswer
-                      ? 'correct'
-                      : answerStatus[currentQuestionIndex].selectedAnswer === questions[currentQuestionIndex][optionKey]
-                      ? 'incorrect selected'
-                      : '')
-                  }`}
-                  onClick={() => handleSelectAnswer(questions[currentQuestionIndex][optionKey])}
-                  disabled={answerStatus[currentQuestionIndex].selectedAnswer !== null || !timerRunning}
-                >
-                  {questions[currentQuestionIndex][optionKey]}
-                </button>
-              </li>
-            ))}
-          </ul>
-          <div className="navigation">
-            <button onClick={handlePreviousQuestion} disabled={currentQuestionIndex === 0}>
-              Previous Question
-            </button>
-            <span className="question-number">
-              {currentQuestionIndex + 1} of {questions.length}
-            </span>
-            <button onClick={handleNextQuestion} disabled={!showNextButton}>
-              {currentQuestionIndex === questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
-            </button>
+    <div className="body">
+      <div className="game-page">
+        {questions.length > 0 && currentQuestionIndex < questions.length && (
+          <div>
+            <h1>{questions[currentQuestionIndex].questionText}</h1>
+            <div className="timer">{formatTime(timer)}</div>
+            <ul className="options">
+              {(['optionA', 'optionB', 'optionC', 'optionD'] as OptionKey[]).map((optionKey) => (
+                <li key={optionKey}>
+                  <button
+                    className={`option-button ${getButtonClass(optionKey)}`}
+                    onClick={() => handleSelectAnswer(questions[currentQuestionIndex][optionKey])}
+                    disabled={isAnswerLocked && answerStatus[currentQuestionIndex].selectedAnswer !== questions[currentQuestionIndex][optionKey]}
+                  >
+                    {questions[currentQuestionIndex][optionKey]}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <div className="navigation">
+              <button onClick={handlePreviousQuestion} disabled={currentQuestionIndex === 0}>
+                Previous Question
+              </button>
+              <span className="question-number">
+                {currentQuestionIndex + 1} of {questions.length}
+              </span>
+              <button onClick={handleNextQuestion} disabled={!showNextButton}>
+                {currentQuestionIndex === questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-      {!showResults && questions.length === 0 && <p>Loading questions...</p>}
-      {showResults && (
-        <div className="results">
-          <h2>Quiz Complete</h2>
-          <p>Your Score: {score} out of {questions.length}</p>
-          <button onClick={handleRestartQuiz}>Restart Quiz</button>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
     </div>
   );
 };
