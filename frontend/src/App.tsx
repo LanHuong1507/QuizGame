@@ -9,15 +9,19 @@ const App: React.FC = () => {
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
+  const [totalPoints, setTotalPoints] = useState(0);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
 
   const handleStartGame = () => {
     setShowGame(true);
     setShowResult(false);
   };
 
-  const handleQuizComplete = (finalScore: number, questionsCount: number) => {
+  const handleQuizComplete = (finalScore: number, questionsCount: number, totalPoints: number, correctAnswers: number) => {
     setScore(finalScore);
     setTotalQuestions(questionsCount);
+    setTotalPoints(totalPoints);
+    setCorrectAnswers(correctAnswers);
     setShowGame(false);
     setShowResult(true);
   };
@@ -27,6 +31,12 @@ const App: React.FC = () => {
     setShowResult(false);
     setScore(0);
     setTotalQuestions(0);
+    setTotalPoints(0);
+    setCorrectAnswers(0);
+  };
+
+  const handleReturnHome = () => {
+    // Implement return home functionality
   };
 
   return (
@@ -38,7 +48,14 @@ const App: React.FC = () => {
         <GamePage onQuizComplete={handleQuizComplete} />
       )}
       {showResult && (
-        <ResultPage score={score} totalQuestions={totalQuestions} onRestart={handleRestartQuiz} />
+        <ResultPage 
+          score={score} 
+          totalQuestions={totalQuestions} 
+          totalPoints={totalPoints} 
+          correctAnswers={correctAnswers} 
+          onRestart={handleRestartQuiz} 
+          onReturnHome={handleReturnHome} 
+        />
       )}
     </div>
   );

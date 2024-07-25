@@ -6,5 +6,7 @@ export interface QuestionData {
     optionC: string;
     optionD: string;
     correctAnswer: OptionKey;
+    point: number;
+
 }
 export type OptionKey = 'optionA' | 'optionB' | 'optionC' | 'optionD';

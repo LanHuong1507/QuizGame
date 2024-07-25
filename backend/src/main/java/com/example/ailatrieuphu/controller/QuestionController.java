@@ -1,6 +1,6 @@
 package com.example.ailatrieuphu.controller;
 
-import com.example.ailatrieuphu.model.Question;
+import com.example.ailatrieuphu.models.Question;
 import com.example.ailatrieuphu.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

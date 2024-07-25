@@ -1,36 +1,72 @@
-
 .result-page {
   text-align: center;
-  margin-top: 100px;
-  background-image: url('../../images/quiz-background.webp'); /* Replace with your image path */
+  margin: 100px auto;
+  background-image: url('../../images/quiz-background.webp');
   background-size: cover;
   background-position: center;
-  padding: 100px; /* Increase padding for more space */
-  min-height: 300px; /* Minimum height of the viewport */
+  padding: 40px;
+  min-height: 300px;
   color: #fff;
-  font-size: 1.5rem; /* Increase font size for better readability */
-  }
-  
-  .result-page h1 {
-    font-size: 3.5rem;
-    color: #fff; 
-  }
-  
-  .result-page p {
-    font-size: 1.2rem;
-    color: #fff; 
-    margin-bottom: 20px;
-  }
-  
-  .result-page button {
-    background-color: #ef470f;
-    color: #fff;
-    font-size: 30px;
-    padding: 20px 20px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  
+  font-size: 2.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
-  
+.result-page h1 {
+  font-size: 3rem;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.result-page p {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+.result-page button {
+  background-color: #ef470f;
+  color: #fff;
+  font-size: 1.2rem;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.result-page button:hover {
+  background-color: #d23d0d;
+  transform: scale(1.05);
+}
+
+/* Result actions container */
+.result-actions {
+  margin-top: 20px;
+}
+
+.result-actions button {
+  margin: 0 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .result-page {
+    padding: 20px;
+    width: auto;
+  }
+
+  .result-page h1 {
+    font-size: 2.5rem;
+  }
+
+  .result-page p {
+    font-size: 1rem;
+  }
+
+  .result-page button {
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+
+}

@@ -1,4 +1,4 @@
-package com.example.ailatrieuphu.model;
+package com.example.ailatrieuphu.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,31 +12,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "questions")
+@Table(name = "categories")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Question {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "question_text")
-    private String questionText;
+    @Column(name = "name")
+    private String name;
 
-    @Column(name = "option_a")
-    private String optionA;
-
-    @Column(name = "option_b")
-    private String optionB;
-
-    @Column(name = "option_c")
-    private String optionC;
-
-    @Column(name = "option_d")
-    private String optionD;
-
-    @Column(name = "correct_answer")
-    private String correctAnswer;
+    @Column(name = "description")
+    private String description;
 }
