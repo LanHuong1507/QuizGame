@@ -1,4 +1,4 @@
-package com.example.ailatrieuphu.service;
+package com.example.ailatrieuphu.services;
 
 import java.util.List;
 import java.util.Set;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.ailatrieuphu.models.Question;
-import com.example.ailatrieuphu.repository.QuestionRepository;
+import com.example.ailatrieuphu.repositories.QuestionRepository;
 
 @Service
 public class QuestionService {
@@ -26,5 +26,9 @@ public class QuestionService {
         return questions.stream()
                         .mapToInt(Question::getPoint)
                         .sum();
+    }
+
+    public Set<Question> getQuestionsByCategoryId(Long categoryId) {
+        return questionRepository.findQuestionsByCategoryId(categoryId);
     }
 }

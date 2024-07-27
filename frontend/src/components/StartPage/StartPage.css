@@ -1,32 +1,85 @@
 .start-page {
-    text-align: center;
-    margin-top: 100px;
-    background-image: url('../../images/quiz-background.webp'); /* Replace with your image path */
-    background-size: cover;
-    background-position: center;
-    padding: 100px; /* Increase padding for more space */
-    min-height: 300px; /* Minimum height of the viewport */
-    color: #fff;
-    font-size: 2.5rem; /* Increase font size for better readability */
-  }
-  
-  .start-page h1 {
-    font-size: 3.5rem;
-    color: #fff; 
-  }
-  
-  .start-page p {
-    font-size: 1.2rem;
-    color: #fff; /* Adjust paragraph color for contrast */
-    margin-bottom: 20px;
-  }
-  
-  .start-button {
-    background-color: #ef470f;
-    color: #fff;
-    font-size: 30px;
-    padding: 20px 20px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-  }
+  text-align: center;
+  margin-top: 80px;
+  background-image: url('../../images/quiz-background.webp'); 
+  background-size: cover;
+  background-position: center;
+  padding: 80px;
+  min-height: 400px; 
+  color: #fff;
+  font-size: 2.5rem; 
+  border-radius: 10px;
+}
+
+.start-page h1 {
+  font-size: 3.5rem;
+  color: #fff; 
+}
+
+.start-page p {
+  font-size: 1.2rem;
+  color: #fff; 
+  margin-bottom: 20px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  gap: 20px; /* Space between elements */
+}
+
+.category-selection {
+  display: flex;
+  align-items: center; 
+  gap: 20px; 
+  max-width: 550px; 
+  margin: 0 auto;
+}
+
+.category-selection label {
+  font-size: 1.5rem; /* Adjust label font size */
+  color: #fff; /* Label color */
+  margin-right: 10px; /* Space between label and select */
+}
+
+.category-selection select {
+  font-size: 1.3rem; /* Larger font size for the select */
+  padding: 15px 25px; /* Larger padding for a bigger dropdown */
+  border: 2px solid #ddd;
+  border-radius: 8px; /* Rounded corners */
+  background-color: #fff;
+  cursor: pointer;
+  width: 250px; /* Wider select box */
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+}
+
+.category-selection select:focus {
+  outline: none;
+  background-color: #f9f9f9; 
+  border-color: #ff5722; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.start-button {
+  background-color: #ef470f;
+  color: #fff;
+  font-size: 1.5rem; 
+  padding: 15px 30px; 
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease; 
+  margin-top: 30px;
+  max-width: 300px;
+}
+
+.start-button:hover {
+  background-color: #d43f0f; 
+  transform: scale(1.05); 
+}
+
+.start-button:active {
+  background-color: #b5350a; 
+}

@@ -1,13 +1,14 @@
-package com.example.ailatrieuphu.controller;
+package com.example.ailatrieuphu.controllers;
 
 import com.example.ailatrieuphu.models.Question;
-import com.example.ailatrieuphu.repository.QuestionRepository;
+import com.example.ailatrieuphu.repositories.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 
 @RestController
@@ -71,5 +72,16 @@ public class QuestionController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // Get questions by category ID
+     @GetMapping("/category/{categoryId}")
+    public ResponseEntity<Set<Question>> getQuestionsByCategoryId(@PathVariable Long categoryId) {
+        Set<Question> questions = questionRepository.findQuestionsByCategoryId(categoryId);
+        if (questions.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        
+        return new ResponseEntity<>(questions, HttpStatus.OK);
     }
 }
