@@ -1,16 +1,24 @@
-
 import React, { useEffect, useState } from 'react';
 import { fetchQuestions } from '../../services/ApiService';
 import { QuestionData, OptionKey } from '../../services/types';
 import './GamePage.css';
+
 interface AnswerStatus {
   selectedAnswer: string | null;
   isCorrect: boolean | null;
 }
+
 interface GamePageProps {
   categoryId: number;
   onQuizComplete: (finalScore: number, totalQuestions: number, totalPoints: number, correctAnswers: number) => void;
 }
+
+const getUniqueRandomQuestions = (questions: QuestionData[], numQuestions: number): QuestionData[] => {
+  const uniqueQuestions = Array.from(new Set(questions.map(q => q.id)))
+    .map(id => questions.find(q => q.id === id)!)
+    .sort(() => 0.5 - Math.random());
+  return uniqueQuestions.slice(0, numQuestions);
+};
 
 const GamePage: React.FC<GamePageProps> = ({ categoryId, onQuizComplete }) => {
   const [questions, setQuestions] = useState<QuestionData[]>([]);
@@ -26,10 +34,11 @@ const GamePage: React.FC<GamePageProps> = ({ categoryId, onQuizComplete }) => {
   useEffect(() => {
     const fetchQuestionsFromApi = async () => {
       try {
-        const data = await fetchQuestions(categoryId); // Use categoryId to fetch questions
-        setQuestions(data);
-        setAnswerStatus(new Array(data.length).fill({ selectedAnswer: null, isCorrect: null }));
-        setTimers(new Array(data.length).fill(15)); // Assuming 15 seconds per question
+        const allQuestions = await fetchQuestions(categoryId);
+        const selectedQuestions = getUniqueRandomQuestions(allQuestions, 30);
+        setQuestions(selectedQuestions);
+        setAnswerStatus(new Array(selectedQuestions.length).fill({ selectedAnswer: null, isCorrect: null }));
+        setTimers(new Array(selectedQuestions.length).fill(20)); 
         setTimerRunning(true);
       } catch (error) {
         console.error('Error fetching questions:', error);
