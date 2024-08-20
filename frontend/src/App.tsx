@@ -1,62 +1,48 @@
-// src/App.tsx
 import React, { useState } from 'react';
-import './App.css';
 import StartPage from './components/StartPage/StartPage';
 import GamePage from './components/GamePage/GamePage';
 import ResultPage from './components/ResultPage/ResultPage';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'start' | 'game' | 'result'>('start');
-  const [score, setScore] = useState(0);
-  const [totalQuestions, setTotalQuestions] = useState(0);
-  const [totalPoints, setTotalPoints] = useState(0);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [gameState, setGameState] = useState<'START' | 'PLAY' | 'RESULT'>('START');
+  const [categoryId, setCategoryId] = useState<number>(0);
+  const [userName, setUserName] = useState<string>('');
+  const [finalScore, setFinalScore] = useState<number>(0);
+  const [totalQuestions, setTotalQuestions] = useState<number>(0);
+  const [totalPoints, setTotalPoints] = useState<number>(0);
+  const [correctAnswers, setCorrectAnswers] = useState<number>(0);
 
-  const handleStartGame = (categoryId: number) => {
-    setSelectedCategory(categoryId);
-    setCurrentView('game');
+  const startGame = (selectedCategoryId: number, name: string) => {
+    setCategoryId(selectedCategoryId);
+    setUserName(name);
+    setGameState('PLAY');
   };
 
-  const handleQuizComplete = (finalScore: number, questionsCount: number, totalPoints: number, correctAnswers: number) => {
-    setScore(finalScore);
-    setTotalQuestions(questionsCount);
-    setTotalPoints(totalPoints);
-    setCorrectAnswers(correctAnswers);
-    setCurrentView('result');
-  };
-
-  const handleRestartQuiz = () => {
-    setCurrentView('start');
-    setScore(0);
-    setTotalQuestions(0);
-    setTotalPoints(0);
-    setCorrectAnswers(0);
-  };
-
-  const handleReturnHome = () => {
-    setCurrentView('start');
+  const handleQuizComplete = (score: number, questions: number, points: number, correct: number) => {
+    setFinalScore(score);
+    setTotalQuestions(questions);
+    setTotalPoints(points);
+    setCorrectAnswers(correct);
+    setGameState('RESULT');
   };
 
   return (
     <div className="App">
-      {currentView === 'start' && (
-        <StartPage onStartGame={handleStartGame} />
-      )}
-      {currentView === 'game' && selectedCategory !== null && (
+      {gameState === 'START' && <StartPage onStartGame={startGame} />}
+      {gameState === 'PLAY' && (
         <GamePage
-          categoryId={selectedCategory}
+          categoryId={categoryId}
+          userName={userName} // Pass userName to GamePage
           onQuizComplete={handleQuizComplete}
         />
       )}
-      {currentView === 'result' && (
-        <ResultPage 
-          score={score} 
-          totalQuestions={totalQuestions} 
-          totalPoints={totalPoints} 
-          correctAnswers={correctAnswers} 
-          onRestart={handleRestartQuiz} 
-          onReturnHome={handleReturnHome} 
+      {gameState === 'RESULT' && (
+        <ResultPage
+          score={finalScore}
+          totalQuestions={totalQuestions}
+          totalPoints={totalPoints}
+          correctAnswers={correctAnswers}
+          userName={userName} // Pass userName to ResultPage
         />
       )}
     </div>
