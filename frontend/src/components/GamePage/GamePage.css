@@ -5,7 +5,7 @@
 }
 
 .game-page {
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   max-width: 1200px; /* Adjusted for a smaller size */
   max-height: 800px; /* Adjusted for a smaller size */
   margin: 0 auto;
@@ -33,29 +33,31 @@
 .question-container {
   margin-top: 20px;
   padding: 20px;
-  border: 1px solid #232121;
   border-radius: 8px;
 }
 
 .question-text {
   font-size: 22px; /* Adjusted for a smaller size */
   font-weight: bold;
-  margin-bottom: 15px;
+  padding: 5px; /* Padding to give some space around the text */
+  border: none; /* Remove border */
+  box-shadow: none; /* Remove shadow */
+  background-color: transparent; /* No background */
 }
 
 .options {
-  list-style-type: none;
   padding: 0;
 }
 
 .option-button {
   display: block;
   width: 100%;
-  padding: 10px;
+  padding: 5px;
   margin-bottom: 10px;
   border: 1px solid #1c1818;
   cursor: pointer;
   font-size: 24px; /* Adjusted for a smaller size */
+  background-color:  transparent;
 }
 
 .option-button:hover {

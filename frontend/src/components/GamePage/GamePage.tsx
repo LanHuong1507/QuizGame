@@ -14,11 +14,19 @@ interface GamePageProps {
   onQuizComplete: (finalScore: number, totalQuestions: number, totalPoints: number, correctAnswers: number) => void;
 }
 
-const getUniqueRandomQuestions = (questions: QuestionData[], numQuestions: number): QuestionData[] => {
-  const uniqueQuestions = Array.from(new Set(questions.map(q => q.id)))
-    .map(id => questions.find(q => q.id === id)!)
-    .sort(() => 0.5 - Math.random());
-  return uniqueQuestions.slice(0, numQuestions);
+const getUniqueRandomQuestions = (questions: QuestionData[]): QuestionData[] => {
+  const getRandomQuestions = (questions: QuestionData[], count: number): QuestionData[] => {
+    return questions.sort(() => 0.5 - Math.random()).slice(0, count);
+  };
+
+  const easyQuestions = getRandomQuestions(questions.filter(q => q.level === 'EASY'), 10);
+  const mediumQuestions = getRandomQuestions(questions.filter(q => q.level === 'MEDIUM'), 10);
+  const hardQuestions = getRandomQuestions(questions.filter(q => q.level === 'HARD'), 5);
+  const expertQuestions = getRandomQuestions(questions.filter(q => q.level === 'EXPERT'), 5);
+
+  const selectedQuestions = [...easyQuestions, ...mediumQuestions, ...hardQuestions, ...expertQuestions];
+
+  return selectedQuestions.sort(() => 0.5 - Math.random()); // Shuffle the combined list again
 };
 
 const GamePage: React.FC<GamePageProps> = ({ categoryId, userName, onQuizComplete }) => {
@@ -36,7 +44,7 @@ const GamePage: React.FC<GamePageProps> = ({ categoryId, userName, onQuizComplet
     const fetchQuestionsFromApi = async () => {
       try {
         const allQuestions = await fetchQuestions(categoryId);
-        const selectedQuestions = getUniqueRandomQuestions(allQuestions, 30);
+        const selectedQuestions = getUniqueRandomQuestions(allQuestions);
         setQuestions(selectedQuestions);
         setAnswerStatus(new Array(selectedQuestions.length).fill({ selectedAnswer: null, isCorrect: null }));
         setTimers(new Array(selectedQuestions.length).fill(20));
@@ -81,7 +89,7 @@ const GamePage: React.FC<GamePageProps> = ({ categoryId, userName, onQuizComplet
       const newAnswerStatus = [...answerStatus];
       newAnswerStatus[currentQuestionIndex] = { selectedAnswer: answer, isCorrect };
       setAnswerStatus(newAnswerStatus);
-      setShowNextButton(false); // Hide the "Next Question" button
+      setShowNextButton(false);
       setTimerRunning(false);
 
       if (isCorrect) {
@@ -89,9 +97,8 @@ const GamePage: React.FC<GamePageProps> = ({ categoryId, userName, onQuizComplet
         setCorrectAnswers((prevCorrect) => prevCorrect + 1);
       }
 
-      // Lock answers and immediately move to the next question
       setIsAnswerLocked(true);
-      setTimeout(handleNextQuestion, 1000); // Delay to show the answer status for 1 second
+      setTimeout(handleNextQuestion, 1000);
     }
   };
 
