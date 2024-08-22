@@ -11,18 +11,23 @@ export const getCategories = async (): Promise<CategoryData[]> => {
         return response.data;
     } catch (error) {
         console.error('Error fetching categories:', error);
-        throw error; // Rethrow or handle the error as per your application's needs
+        throw error;
     }
 };
 
-// Fetch questions by category ID
-export const fetchQuestions = async (categoryId: number): Promise<QuestionData[]> => {
+// Fetch questions by category ID and level
+export const fetchQuestions = async (categoryId: number, level: string): Promise<QuestionData[]> => {
     try {
-        const response = await axios.get(`${BASE_URL}/questions/category/${categoryId}`);
+        const response = await axios.get(`${BASE_URL}/questions/by-category-and-level`, {
+            params: {
+                categoryId: categoryId,
+                level: level
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching questions:', error);
-        throw error; // Rethrow the error to be handled by the caller
+        throw error;
     }
 };
 
@@ -37,6 +42,17 @@ export const saveScore = async (username: string, categoryId: number, score: num
         return response.data;
     } catch (error) {
         console.error('Error saving score:', error);
+        throw error;
+    }
+};
+
+// Fetch levels
+export const getLevels = async (): Promise<string[]> => {
+    try {
+        const response = await axios.get(`${BASE_URL}/levels`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching levels:', error);
         throw error;
     }
 };

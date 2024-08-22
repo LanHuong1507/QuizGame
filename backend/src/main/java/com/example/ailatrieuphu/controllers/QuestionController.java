@@ -1,7 +1,10 @@
 package com.example.ailatrieuphu.controllers;
 
+import com.example.ailatrieuphu.enums.Level;
 import com.example.ailatrieuphu.models.Question;
 import com.example.ailatrieuphu.repositories.QuestionRepository;
+import com.example.ailatrieuphu.services.QuestionService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,8 @@ public class QuestionController {
 
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private QuestionService questionService;
 
     // Get all questions
     @GetMapping
@@ -74,14 +79,15 @@ public class QuestionController {
         }
     }
 
-    // Get questions by category ID
-     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<Set<Question>> getQuestionsByCategoryId(@PathVariable Long categoryId) {
-        Set<Question> questions = questionRepository.findQuestionsByCategoryId(categoryId);
+    @GetMapping("/by-category-and-level")
+    public ResponseEntity<Set<Question>> getQuestionsByCategoryAndLevel(
+            @RequestParam("categoryId") Long categoryId,
+            @RequestParam("level") Level level) {
+        Set<Question> questions = questionService.getQuestionsByCategoryAndLevel(categoryId, level);
         if (questions.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.noContent().build();
         }
-        
-        return new ResponseEntity<>(questions, HttpStatus.OK);
+        return ResponseEntity.ok(questions);
     }
+    
 }

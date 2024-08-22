@@ -6,14 +6,16 @@ import ResultPage from './components/ResultPage/ResultPage';
 const App: React.FC = () => {
   const [gameState, setGameState] = useState<'START' | 'PLAY' | 'RESULT'>('START');
   const [categoryId, setCategoryId] = useState<number>(0);
+  const [level, setLevel] = useState<string>(''); // Add state for the level
   const [userName, setUserName] = useState<string>('');
   const [finalScore, setFinalScore] = useState<number>(0);
   const [totalQuestions, setTotalQuestions] = useState<number>(0);
   const [totalPoints, setTotalPoints] = useState<number>(0);
   const [correctAnswers, setCorrectAnswers] = useState<number>(0);
 
-  const startGame = (selectedCategoryId: number, name: string) => {
+  const startGame = (selectedCategoryId: number, selectedLevel: string, name: string) => {
     setCategoryId(selectedCategoryId);
+    setLevel(selectedLevel); // Set the selected level
     setUserName(name);
     setGameState('PLAY');
   };
@@ -32,7 +34,8 @@ const App: React.FC = () => {
       {gameState === 'PLAY' && (
         <GamePage
           categoryId={categoryId}
-          userName={userName} // Pass userName to GamePage
+          level={level} // Pass the selected level to GamePage
+          userName={userName}
           onQuizComplete={handleQuizComplete}
         />
       )}
@@ -42,7 +45,7 @@ const App: React.FC = () => {
           totalQuestions={totalQuestions}
           totalPoints={totalPoints}
           correctAnswers={correctAnswers}
-          userName={userName} // Pass userName to ResultPage
+          userName={userName}
         />
       )}
     </div>

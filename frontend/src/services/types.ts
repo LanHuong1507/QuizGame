@@ -13,13 +13,14 @@ export interface QuestionData {
   optionD: string;
   correctAnswer: string;
   point: number;
-  level: string; // Added level for question difficulty or type
+  level: string; // Level of question difficulty or type
 }
 
 // Define the structure for category data
 export interface CategoryData {
   id: number;
   name: string;
+  level: string; // Optional: Include level if categories are distinguished by level
 }
 
 // Define the structure for answer status
@@ -32,5 +33,6 @@ export interface AnswerStatus {
 export interface SaveScoreRequest {
   userName: string;
   categoryId: number;
+  level: string; // Level added to track the difficulty of the quiz
   score: number;
 }

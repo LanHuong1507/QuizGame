@@ -10,6 +10,7 @@ interface AnswerStatus {
 
 interface GamePageProps {
   categoryId: number;
+  level: string; // Add level to the GamePageProps
   userName: string;
   onQuizComplete: (finalScore: number, totalQuestions: number, totalPoints: number, correctAnswers: number) => void;
 }
@@ -29,11 +30,10 @@ const getUniqueRandomQuestions = (questions: QuestionData[]): QuestionData[] => 
   return selectedQuestions.sort(() => 0.5 - Math.random()); // Shuffle the combined list again
 };
 
-const GamePage: React.FC<GamePageProps> = ({ categoryId, userName, onQuizComplete }) => {
+const GamePage: React.FC<GamePageProps> = ({ categoryId, level, userName, onQuizComplete }) => {
   const [questions, setQuestions] = useState<QuestionData[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [answerStatus, setAnswerStatus] = useState<AnswerStatus[]>([]);
-  const [showNextButton, setShowNextButton] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [correctAnswers, setCorrectAnswers] = useState<number>(0);
   const [timers, setTimers] = useState<number[]>([]);
@@ -43,7 +43,7 @@ const GamePage: React.FC<GamePageProps> = ({ categoryId, userName, onQuizComplet
   useEffect(() => {
     const fetchQuestionsFromApi = async () => {
       try {
-        const allQuestions = await fetchQuestions(categoryId);
+        const allQuestions = await fetchQuestions(categoryId,level);
         const selectedQuestions = getUniqueRandomQuestions(allQuestions);
         setQuestions(selectedQuestions);
         setAnswerStatus(new Array(selectedQuestions.length).fill({ selectedAnswer: null, isCorrect: null }));
@@ -89,7 +89,7 @@ const GamePage: React.FC<GamePageProps> = ({ categoryId, userName, onQuizComplet
       const newAnswerStatus = [...answerStatus];
       newAnswerStatus[currentQuestionIndex] = { selectedAnswer: answer, isCorrect };
       setAnswerStatus(newAnswerStatus);
-      setShowNextButton(false);
+      setIsAnswerLocked(true);
       setTimerRunning(false);
 
       if (isCorrect) {
@@ -97,15 +97,16 @@ const GamePage: React.FC<GamePageProps> = ({ categoryId, userName, onQuizComplet
         setCorrectAnswers((prevCorrect) => prevCorrect + 1);
       }
 
-      setIsAnswerLocked(true);
-      setTimeout(handleNextQuestion, 1000);
+      // Automatically move to the next question after a short delay
+      setTimeout(() => {
+        handleNextQuestion();
+      }, 1000);
     }
   };
 
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
-      setIsAnswerLocked(true);
-      setShowNextButton(true);
+      setIsAnswerLocked(false);
       setTimerRunning(false);
       setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
     }
@@ -114,7 +115,6 @@ const GamePage: React.FC<GamePageProps> = ({ categoryId, userName, onQuizComplet
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setIsAnswerLocked(false);
-      setShowNextButton(false);
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
       setTimerRunning(true);
     } else {
@@ -182,7 +182,7 @@ const GamePage: React.FC<GamePageProps> = ({ categoryId, userName, onQuizComplet
                   <button
                     className={getButtonClass(optionKey)}
                     onClick={() => handleSelectAnswer(questions[currentQuestionIndex][optionKey])}
-                    disabled={isAnswerLocked && answerStatus[currentQuestionIndex].selectedAnswer !== questions[currentQuestionIndex][optionKey]}
+                    disabled={isAnswerLocked}
                   >
                     {questions[currentQuestionIndex][optionKey]}
                   </button>
@@ -196,7 +196,7 @@ const GamePage: React.FC<GamePageProps> = ({ categoryId, userName, onQuizComplet
               <span className="question-number">
                 {currentQuestionIndex + 1} of {questions.length}
               </span>
-              <button onClick={handleNextQuestion} disabled={!showNextButton}>
+              <button onClick={handleNextQuestion} disabled={!isAnswerLocked}>
                 {currentQuestionIndex === questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
               </button>
             </div>

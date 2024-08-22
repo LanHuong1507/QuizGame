@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.ailatrieuphu.enums.Level;
 import com.example.ailatrieuphu.models.Question;
 import com.example.ailatrieuphu.repositories.QuestionRepository;
 
@@ -28,7 +29,7 @@ public class QuestionService {
                         .sum();
     }
 
-    public Set<Question> getQuestionsByCategoryId(Long categoryId) {
-        return questionRepository.findQuestionsByCategoryId(categoryId);
+    public Set<Question> getQuestionsByCategoryAndLevel(Long categoryId, Level level) {
+        return questionRepository.findQuestionsByCategoryIdAndLevel(categoryId, level);
     }
 }

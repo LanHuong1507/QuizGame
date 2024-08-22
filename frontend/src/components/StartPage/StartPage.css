@@ -1,6 +1,5 @@
 .start-page {
   text-align: center;
-  margin-top: 80px;
   background-image: url('../../images/quiz-background.webp'); 
   background-size: cover;
   background-position: center;
@@ -24,29 +23,33 @@
 
 .controls {
   display: flex;
-  justify-content: center; /* Center the content horizontally */
-  align-items: center; 
-  gap: 20px; /* Space between name and category fields */
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
   margin-bottom: 30px;
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
-.user-name-input,
-.category-selection {
+.row {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Align label and input to the left */
-  gap: 10px; /* Space between label and input/select */
-  max-width: 300px; /* Limit width for better alignment */
-  width: 100%; /* Full width within the container */
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 
 .user-name-input {
-  margin-right: 20px; /* Padding between name and category */
+  max-width: 300px;
+  width: 100%;
+}
+
+.category-selection,
+.level-selection {
+  max-width: 300px;
+  width: 100%;
 }
 
 .user-name-input input,
-.category-selection select {
+.category-selection select,
+.level-selection select {
   width: 100%;
   padding: 15px;
   border: 2px solid #ddd;
@@ -58,7 +61,8 @@
 }
 
 .user-name-input input:focus,
-.category-selection select:focus {
+.category-selection select:focus,
+.level-selection select:focus {
   outline: none;
   background-color: #f9f9f9;
   border-color: #ff5722;
@@ -66,10 +70,11 @@
 }
 
 .user-name-input label,
-.category-selection label {
-  font-size: 1.5rem; /* Adjust label font size */
-  color: #fff; /* Label color */
-  margin-bottom: 5px; /* Space between label and input/select */
+.category-selection label,
+.level-selection label {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 5px;
 }
 
 .start-button {
@@ -96,7 +101,7 @@
 
 @media (max-width: 768px) {
   .controls {
-    flex-direction: column; /* Stack fields on smaller screens */
+    flex-direction: column;
     gap: 15px;
   }
 }
